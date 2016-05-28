@@ -7,5 +7,7 @@ public class Pokemon {
 	int prevolution;	//The Pokemon that evolves into this 
 	
 	ArrayList<Integer> moves;  //List of all possible moves this pokemon can have (max Mew-114) - Stores move's code
-	int type[]; // There are 18 types, as of ORAS 
+	int type[]=new int[2]; // There are 18 types, as of ORAS 
+		//	^^^^
+		//	maximo dois tipos
 }
