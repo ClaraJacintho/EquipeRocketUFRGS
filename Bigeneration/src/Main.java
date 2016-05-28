@@ -37,7 +37,7 @@ public class Main {
 					
 					if(cod == pkm.code){
 						pkm.type[i]= tipo;
-						typeBuff.mark(720);
+						typeBuff.mark(6);
 					}
 					else{
 						pkm.type[i] = -1;
