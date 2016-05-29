@@ -53,7 +53,8 @@ public class Main {
 				//Pra pegar os golpes -> mesma coisa dos outros
 				int flag = 0;
 				int version_id;
-				while(flag == 0){
+				movesLine = movesBuff.readLine();	//vamos pegar a primeira linha e n usar pq
+				while(flag == 0){			//ela so tem o "header"
 					pokeList.clear();
 					movesLine = movesBuff.readLine();
 					for (String part : movesLine.split(",")) {
