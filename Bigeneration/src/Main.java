@@ -67,7 +67,7 @@ public class Main {
 						if(cod == pkm.code){
 							cod = Integer.valueOf(pokeList.get(2));	//Reutilizando a variavel :V
 							pkm.moves.add(cod);	
-							movesBuff.mark(100);					//Marca??? Nao esta dando certo, como da ultima vez
+							movesBuff.mark(72000);					//Marca??? Nao esta dando certo, como da ultima vez
 							System.out.println(cod);				// Imprimir agora pq eh mais facil
 						}else{
 							movesBuff.reset();						//Da um reset
