@@ -16,8 +16,10 @@ public class BtreeTest {
         
     }
     public static void generateEx(String fName){
-        Bnode itens[];
-        //itens = new Bnode[];
+        Bnode[] itens=new Bnode[6];
+        for (int i = 0; i < 6; i++) {
+            itens[i] = new Bnode();
+        }
         itens[0].chaves[0]=10;          //raiz
         itens[0].chaves[1]=20;
         itens[0].chaves[2]=30;
