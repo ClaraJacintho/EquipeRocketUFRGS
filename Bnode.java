@@ -3,7 +3,7 @@ package btreetest;
 
 public class Bnode implements java.io.Serializable{
     public int t=2;    //n minimo de chaves                     //2 soh para fins de teste
-    public int nchaves;
+    public int nchaves=0;
     public boolean folha;
     public int papai;
     public int[] chaves= new int[2*t];  //para cada chave um offset no arquivo
@@ -20,9 +20,28 @@ public class Bnode implements java.io.Serializable{
         return nchaves==2*t;
     }
     public void shiftData(int position){       //shifta chaves e offset, abrindo
-        for(int i=nchaves-1;i>=position;i--){  //espaco em position
+        int i;
+        if(folha){
+            for(i=nchaves-1;i>=position;i--){  //espaco em position
             chaves[i+1]=chaves[i];
             offset[i+1]=offset[i];
+        }
+        }else{
+            for(i=nchaves-1;i>=position;i--){  //espaco em position
+            chaves[i+1]=chaves[i];
+            offset[i+1]=offset[i];
+            pointer[i+2]=pointer[i+1];
+        }
+        }
+        
+    }
+    public void trocaCoisas(Bnode dest, int m){
+        int j=0;
+        for(int i=m;i<nchaves;i++,j++){
+            dest.chaves[j]=chaves[i];
+            dest.offset[j]=offset[i];
+            dest.nchaves++;
+            nchaves--;
         }
     }
 }
