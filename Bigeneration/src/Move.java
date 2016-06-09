@@ -1,5 +1,10 @@
+import java.io.Serializable;
 
-public class Move {
+public class Move implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9191812752481609432L;
 	int code;
 	int type;
 	int accuracy;
