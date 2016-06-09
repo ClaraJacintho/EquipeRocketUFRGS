@@ -20,7 +20,6 @@ public class Main {
 			
 			ArrayList<String> pokeList = new ArrayList<String>();
 			
-			int typeequals = 0;
 			while((line=pokedex_buff.readLine())!=null){
 				Pokemon pkm = new Pokemon();
 				pokeList.clear(); 
@@ -53,8 +52,7 @@ public class Main {
 				//Pra pegar os golpes -> mesma coisa dos outros
 				int flag = 0;
 				int version_id;
-				movesLine = movesBuff.readLine();	//vamos pegar a primeira linha e n usar pq
-				while(flag == 0){			//ela so tem o "header"
+				while(flag == 0){
 					pokeList.clear();
 					movesLine = movesBuff.readLine();
 					for (String part : movesLine.split(",")) {
@@ -67,19 +65,33 @@ public class Main {
 						if(cod == pkm.code){
 							cod = Integer.valueOf(pokeList.get(2));	//Reutilizando a variavel :V
 							pkm.moves.add(cod);	
-							movesBuff.mark(72000);					//Marca??? Nao esta dando certo, como da ultima vez
-							System.out.println(cod);				// Imprimir agora pq eh mais facil
+							movesBuff.mark(50000);					// Imprimir agora pq eh mais facil
 						}else{
 							movesBuff.reset();						//Da um reset
 							flag = 1;								//Sai do loop
 						}
 					}
 					
+					
+					
 				}
 				
 				
-				System.out.println(pkm.code+" "+pkm.name+" "+pkm.type[0]+" "+pkm.type[1]);
-				System.out.println();
+				//System.out.println(pkm.code+" "+pkm.name+" "+pkm.type[0]+" "+pkm.type[1]);
+				//System.out.println();
+				  
+			      try
+			      {
+			         FileOutputStream fileOut =  new FileOutputStream("pokedex.ser");
+			         ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			         out.writeObject(pkm);
+			         out.close();
+			         fileOut.close();
+			         //System.out.printf("Serialized data is saved in /tmp/employee.ser");
+			      }catch(IOException i)
+			      {
+			          i.printStackTrace();
+			      }
 			}
 			pokedex_buff.close();
 			typeBuff.close();
@@ -89,8 +101,32 @@ public class Main {
 			System.out.println("File not found!");
 			System.out.println(Arrays.toString(e.getStackTrace()));
 		}
-	
-	
-	
+		
+		
+		try {
+			Pokemon pkm = new Pokemon();
+	        FileInputStream fileIn = new FileInputStream("pokedex.ser");
+		    ObjectInputStream in = new ObjectInputStream(fileIn);
+		    for(int i=0; i< 720; i++){
+		     	 pkm =(Pokemon) in.readObject();
+		       	 System.out.println(pkm.code+" "+pkm.name+" "+pkm.type[0]+" "+pkm.type[1]);
+		       	 System.out.println();
+			}
+		    in.close();
+		    fileIn.close();
+		 }
+		catch(IOException e){
+		    e.printStackTrace();
+		    return;
+		}
+		catch(ClassNotFoundException c) {
+		     System.out.println("Pokemon class not found");
+		     c.printStackTrace();
+		     return;
+	   }
 	}
 }
+
+	
+	
+
