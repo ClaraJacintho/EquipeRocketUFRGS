@@ -11,7 +11,7 @@ public class Bnode implements java.io.Serializable{
     public int[] offset= new int[2*t];
     
     public void printNode(){
-        System.out.println("nchaves="+nchaves+", folha:"+folha);
+        System.out.println("nchaves="+nchaves+", folha:"+folha+" papai="+papai);
         for(int i=0; i<nchaves; i++){
             System.out.println(chaves[i]+" - "+offset[i]);
         }
@@ -36,12 +36,26 @@ public class Bnode implements java.io.Serializable{
         
     }
     public void trocaCoisas(Bnode dest, int m){
-        int j=0;
-        for(int i=m;i<nchaves;i++,j++){
+        int j=0, i;
+        for(i=m;i<nchaves;i++,j++){
             dest.chaves[j]=chaves[i];
             dest.offset[j]=offset[i];
+            dest.pointer[j]=pointer[i];
             dest.nchaves++;
             nchaves--;
         }
+        dest.pointer[j]=pointer[i];
+    }
+    public void trocaCoisas(Bnode dest, int m, int filhoD){
+        int j=0, i;
+        for(i=m;i<nchaves;i++,j++){
+            dest.chaves[j]=chaves[i];
+            dest.offset[j]=offset[i];
+            dest.pointer[j+1]=pointer[i+1];
+            dest.nchaves++;
+            nchaves--;
+        }
+        dest.pointer[0]=filhoD;
+        
     }
 }
