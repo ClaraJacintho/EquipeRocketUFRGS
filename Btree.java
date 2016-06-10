@@ -1,4 +1,3 @@
-
 package btreetest;
 
 import java.io.FileInputStream;
@@ -131,9 +130,12 @@ public class Btree {
     public void insereFull(int key, int offset, int spot) {  //SPLIT         corrigir tirar spot
         Bnode novoNode = new Bnode();
         Bnode alvo = nodo.get(spot);
-        int t = novoNode.t, i;
+        int t = novoNode.t, i, chave, off;
         if (key > alvo.chaves[t]) {
+            chave=alvo.chaves[t];
+            off=alvo.offset[t];
             alvo.trocaCoisas(novoNode, t + 1);
+            alvo.nchaves--;
             novoNode.papai = alvo.papai;
             novoNode.folha = alvo.folha;
             for (i = 0; i < novoNode.nchaves; i++) //acha onde no nodo botar
@@ -146,13 +148,17 @@ public class Btree {
             novoNode.chaves[i] = key;
             novoNode.offset[i] = offset;  //insere
             novoNode.nchaves++;
+            
             nodo.set(spot, alvo);   //salva alvo de volta para a lista
             nodo.add(novoNode);     //salva novoNode na lista
             quant++;
-            insereNoPai(alvo.chaves[t], alvo.offset[t], alvo.papai, quant - 1);
+            insereNoPai(chave, off, alvo.papai, quant - 1);
 
         } else if (key < alvo.chaves[t - 1]) {
+            chave=alvo.chaves[t-1];
+            off=alvo.offset[t-1];
             alvo.trocaCoisas(novoNode, t);
+            alvo.nchaves--;
             novoNode.papai = alvo.papai;
             novoNode.folha = alvo.folha;
             for (i = 0; i < alvo.nchaves; i++) //acha onde no nodo botar
@@ -168,7 +174,7 @@ public class Btree {
             nodo.set(spot, alvo);   //salva alvo de volta para a lista
             nodo.add(novoNode);     //salva novoNode na lista
             quant++;
-            insereNoPai(alvo.chaves[t - 1], alvo.offset[t - 1], alvo.papai, quant - 1);
+            insereNoPai(chave, off, alvo.papai, quant - 1);
 
         } else {
             alvo.trocaCoisas(novoNode, t);
@@ -183,8 +189,8 @@ public class Btree {
     }
 
     public void insereNoPai(int key, int offset, int spot, int filhoD) {
-        int i;
-        if (spot == -1) {
+        int i, chave, off;
+        if (spot == -1) {                   //se a raiz estava cheia
             Bnode novissimo = new Bnode();
             novissimo.papai = -1;
             novissimo.folha = false;
@@ -217,10 +223,16 @@ public class Btree {
                 alvo.chaves[i] = key;
                 alvo.offset[i] = offset;  //insere
                 alvo.pointer[1 + i] = filhoD;
+                novoNode=nodo.get(filhoD);
+                novoNode.papai=spot;
+                nodo.set(filhoD, novoNode);
                 alvo.nchaves++;
                 nodo.set(spot, alvo);   //salva alvo de volta para a lista
             } else if (key > alvo.chaves[t]) {
+                chave=alvo.chaves[t];
+                off=alvo.offset[t];
                 alvo.trocaCoisas(novoNode, t + 1);
+                alvo.nchaves--;
                 novoNode.papai = alvo.papai;
                 novoNode.folha = alvo.folha;
                 for (i = 0; i < novoNode.nchaves; i++) //acha onde no nodo botar
@@ -237,10 +249,14 @@ public class Btree {
                 nodo.set(spot, alvo);   //salva alvo de volta para a lista
                 nodo.add(novoNode);     //salva novoNode na lista
                 quant++;
-                insereNoPai(alvo.chaves[t], alvo.offset[t], alvo.papai, quant - 1);
+                setaFilhos(quant-1);
+                insereNoPai(chave, off, alvo.papai, quant - 1);
 
             } else if (key < alvo.chaves[t - 1]) {
+                chave=alvo.chaves[t-1];
+                off=alvo.offset[t-1];
                 alvo.trocaCoisas(novoNode, t);
+                alvo.nchaves--;
                 novoNode.papai = alvo.papai;
                 novoNode.folha = alvo.folha;
                 for (i = 0; i < alvo.nchaves; i++) //acha onde no nodo botar
@@ -257,7 +273,8 @@ public class Btree {
                 nodo.set(spot, alvo);   //salva alvo de volta para a lista
                 nodo.add(novoNode);     //salva novoNode na lista
                 quant++;
-                insereNoPai(alvo.chaves[t - 1], alvo.offset[t - 1], alvo.papai, quant - 1);
+                setaFilhos(quant-1);
+                insereNoPai(chave, off, alvo.papai, quant - 1);
 
             } else {
                 alvo.trocaCoisas(novoNode, t, filhoD);
@@ -266,6 +283,7 @@ public class Btree {
                 nodo.set(spot, alvo);   //salva alvo de volta para a lista
                 nodo.add(novoNode);     //salva novoNode na lista
                 quant++;
+                setaFilhos(quant-1);
                 insereNoPai(key, offset, alvo.papai, quant - 1);
             }
         }
@@ -298,7 +316,15 @@ public class Btree {
 
             }
         }
-
+    }
+    public void setaFilhos(int spot){
+        Bnode pai=nodo.get(spot), filho;
+        for(int i=0;i<=pai.nchaves;i++){
+            filho=nodo.get(pai.pointer[i]);
+            filho.papai=spot;
+            nodo.set(pai.pointer[i], filho);
+        }
+        
     }
 
 }//splita, passa chaves, insere nova, passa filhos de acordo com chave media,salvar
