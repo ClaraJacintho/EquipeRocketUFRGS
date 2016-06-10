@@ -1,186 +1,118 @@
 
 package btreetest;
-
-import java.io.FileInputStream;
+        
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+public class BtreeTest {
+    //Regra Geral: se eh -1 entao n existe
+    public static void main(String[] args) throws ClassNotFoundException {
+        
+        generateEx("arq3");
+        Btree arvi=new Btree("arq3");
+        arvi.insere(44, 440);
+        arvi.insere(50, 500);
+        
+        arvi.printTree();
+        
+    }
+    public static void generateEx(String fName){    //gera um arquivo com uma 
+        Bnode[] itens=new Bnode[6];                 //arvore B generica
+        for (int i = 0; i < 6; i++) {
+            itens[i] = new Bnode();
+        }
+        itens[0].chaves[0]=10;          //raiz
+        itens[0].chaves[1]=20;
+        itens[0].chaves[2]=30;
+        itens[0].chaves[3]=40;
+        itens[0].folha=false;
+        itens[0].nchaves=4;
+        itens[0].offset[0]=100;
+        itens[0].offset[1]=200;
+        itens[0].offset[2]=300;
+        itens[0].offset[3]=400;
+        itens[0].pointer[0]=1;
+        itens[0].pointer[1]=2;
+        itens[0].pointer[2]=3;
+        itens[0].pointer[3]=4;
+        itens[0].pointer[4]=5;
+        itens[0].papai=-1;      //a raiz n tem pai
+        
+        itens[1].chaves[0]=3;
+        itens[1].chaves[1]=5;
+        itens[1].chaves[2]=8;
+        itens[1].folha=true;
+        itens[1].nchaves=3;
+        itens[1].offset[0]=30;
+        itens[1].offset[1]=50;
+        itens[1].offset[2]=80;
+        itens[1].papai=0;
 
-
-public class Btree {
-    ArrayList<Bnode> nodo = new ArrayList<Bnode>();
-    public String   fileName;
-    public int      quant;  //numero de nodos
-    public int      root;
-    
-    //construtor: a ideia aqui eh abrir o arquivo (se nao conseguir, cria-lo) e
-    //transferir o arranjo de Bnodo's para a memoria.
-    public Btree(String fileName) throws ClassNotFoundException{
-        this.fileName=fileName;
-        Bnode tmp;
+        itens[2].chaves[0]=13;
+        itens[2].chaves[1]=15;
+        itens[2].chaves[2]=18;
+        itens[2].folha=true;
+        itens[2].nchaves=3;
+        itens[2].offset[0]=130;
+        itens[2].offset[1]=150;
+        itens[2].offset[2]=180;
+        itens[2].papai=0;
+        
+        itens[3].chaves[0]=23;
+        itens[3].chaves[1]=25;
+        itens[3].chaves[2]=28;
+        itens[3].folha=true;
+        itens[3].nchaves=3;
+        itens[3].offset[0]=230;
+        itens[3].offset[1]=250;
+        itens[3].offset[2]=280;
+        itens[3].papai=0;
+        
+        itens[4].chaves[0]=33;
+        itens[4].chaves[1]=35;
+        itens[4].chaves[2]=38;
+        itens[4].folha=true;
+        itens[4].nchaves=3;
+        itens[4].offset[0]=330;
+        itens[4].offset[1]=350;
+        itens[4].offset[2]=380;
+        itens[4].papai=0;
+        
+        itens[5].chaves[0]=43;
+        itens[5].chaves[1]=45;
+        itens[5].chaves[2]=48;
+        itens[5].folha=true;
+        itens[5].nchaves=3;
+        itens[5].offset[0]=430;
+        itens[5].offset[1]=450;
+        itens[5].offset[2]=480;
+        itens[5].papai=0;
+        
         try{
-        FileInputStream fileIn = new FileInputStream(fileName);
-        ObjectInputStream in = new ObjectInputStream(fileIn);
-        
-        quant=in.readInt();
-        root=in.readInt();
-        for(int i=0;i<quant; i++){
-            nodo.add((Bnode) in.readObject());
-        }
-        fileIn.close();
-        in.close(); 
-        }catch(IOException e){  //se n tem arquivo
-            makeFile();
-        }
-    }
-    private void makeFile(){        //cria um arquivo com uma raiz folha
-        Bnode raiz= new Bnode();    //com nchaves==0
-        raiz.nchaves=0;
-        raiz.folha=true;
-        raiz.papai=-1;
-        try {
-            FileOutputStream fileOut = new FileOutputStream(fileName);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeInt(0);
-            out.writeInt(0);
-            out.writeObject(raiz);
-            out.close();
-            fileOut.close();
-            quant=0;
-            root=0;
+            //1 - Crie um objeto FileOutputStream
+            FileOutputStream fileStream = new FileOutputStream(fName);
+            //2 - Crie um ObjectOutputStream
+            ObjectOutputStream os = new ObjectOutputStream(fileStream);
+            //3 - Grave quantos tem e raiz
+            os.writeInt(6);
+            os.writeInt(0);
+            //4 - Grave os objetos
+            os.writeObject(itens[0]); 
+            os.writeObject(itens[1]);
+            os.writeObject(itens[2]);
+            os.writeObject(itens[3]);
+            os.writeObject(itens[4]);
+            os.writeObject(itens[5]);
+            //5 - Feche ObjectOutputStream
+            os.close();
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Btree.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BtreeTest.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(Btree.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }
-    public void printTree(){    //imprime todos os nodos
-        for(int i=0; i<quant; i++){
-            nodo.get(i).printNode();
+            Logger.getLogger(BtreeTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public void close(){    //salva tudo no arquivo
-        try {
-            FileOutputStream fileOut = new FileOutputStream(fileName);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeInt(quant);
-            out.writeInt(root);
-            for(int i=0;i<quant;i++){
-                out.writeObject(nodo.get(i));
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Btree.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Btree.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    public int ondeInsere(int key){ //retorna indice do nodo onde deve
-        Bnode alvo=nodo.get(root);     //ser inserida a chave
-        int i, index=0;
-        if(quant==0)
-            return 0;
-        else{
-            while(alvo.folha==false){
-                i=0;
-                while(i<alvo.nchaves){
-                    if(key<alvo.chaves[i])
-                        break;
-                    else i++;
-                }
-                index=alvo.pointer[i];
-                alvo=nodo.get(alvo.pointer[i]);
-                
-            }
-            return index;    
-        }
-        
-    }
-    public void insere(int key, int offset){
-        int spot=ondeInsere(key), i;
-        Bnode alvo=nodo.get(spot);
-        if(alvo.isFull()==false){ //se tem espaço eh so fazer uma inserçao linear
-            for(i=0; i<alvo.nchaves; i++)   //acha onde no nodo botar
-                if(key<alvo.chaves[i])
-                    break;
-            alvo.shiftData(i);      //libera espaco para inserir
-            alvo.chaves[i]=key;
-            alvo.offset[i]=offset;  //insere
-            alvo.nchaves++;
-            nodo.set(spot, alvo);   //salva alvo de volta para a lista
-        }
-        else insereFull(key, offset, spot); //chama split
-    }
-    public void insereFull(int key, int offset, int spot){  //SPLIT         corrigir tirar spot
-        Bnode novoNode=new Bnode();
-        Bnode alvo=nodo.get(spot);
-        int t=novoNode.t, i;
-        int keyMed, offMed;
-        if(key>alvo.chaves[t]){
-            alvo.trocaCoisas(novoNode,t+1);
-            novoNode.papai=alvo.papai;
-            novoNode.folha=alvo.folha;
-            for(i=0; i<novoNode.nchaves; i++)   //acha onde no nodo botar
-                if(key<novoNode.chaves[i])
-                    break;
-            novoNode.shiftData(i);      //libera espaco para inserir
-            novoNode.chaves[i]=key;
-            novoNode.offset[i]=offset;  //insere
-            novoNode.nchaves++;
-            
-            insereNoPai();
-            
-            nodo.add(novoNode);   //salva alvo de volta para a lista
-            
-            
-        }else if(key<alvo.chaves[t-1]){
-            alvo.trocaCoisas(novoNode,t);
-            novoNode.papai=alvo.papai;
-            novoNode.folha=alvo.folha;
-            for(i=0; i<alvo.nchaves; i++)   //acha onde no nodo botar
-                if(key<alvo.chaves[i])
-                    break;
-            alvo.shiftData(i);      //libera espaco para inserir
-            alvo.chaves[i]=key;
-            alvo.offset[i]=offset;  //insere
-            alvo.nchaves++;
-            nodo.add(novoNode);   //salva alvo de volta para a lista
-            insereNoPai();
-            
-            
-        }else{
-            alvo.trocaCoisas(novoNode,t);
-            novoNode.papai=alvo.papai;
-            novoNode.folha=alvo.folha;
-            nodo.add(novoNode);   //salva alvo de volta para a lista
-            insereNoPai();
-        }
-        
-        
-    }
-    public void insereNoPai(int key, int offset, int spot, int filhoD){
-        int i;
-        Bnode alvo=nodo.get(spot);
-        if(alvo.isFull()==false){ //se tem espaço eh so fazer uma inserçao linear
-            for(i=0; i<alvo.nchaves; i++)   //acha onde no nodo botar
-                if(key<alvo.chaves[i])
-                    break;
-            alvo.shiftData(i);      //libera espaco para inserir
-            alvo.chaves[i]=key;
-            alvo.offset[i]=offset;  //insere
-            alvo.pointer[1+i]=filhoD;
-            alvo.nchaves++;
-            nodo.set(spot, alvo);   //salva alvo de volta para a lista
-        }
-        else {
-            
-        }
-    }
-    
-}//splita, passa chaves, insere nova, passa filhos de acordo com chave media,salvar
+}
