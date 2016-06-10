@@ -1,4 +1,3 @@
-
 package btreetest;
 
 public class Bnode implements java.io.Serializable{
@@ -36,8 +35,8 @@ public class Bnode implements java.io.Serializable{
         
     }
     public void trocaCoisas(Bnode dest, int m){
-        int j=0, i;
-        for(i=m;i<nchaves;i++,j++){
+        int j=0, i, n=nchaves;
+        for(i=m;i<n;i++,j++){
             dest.chaves[j]=chaves[i];
             dest.offset[j]=offset[i];
             dest.pointer[j]=pointer[i];
@@ -47,8 +46,8 @@ public class Bnode implements java.io.Serializable{
         dest.pointer[j]=pointer[i];
     }
     public void trocaCoisas(Bnode dest, int m, int filhoD){
-        int j=0, i;
-        for(i=m;i<nchaves;i++,j++){
+        int j=0, i, n=nchaves;
+        for(i=m;i<n;i++,j++){
             dest.chaves[j]=chaves[i];
             dest.offset[j]=offset[i];
             dest.pointer[j+1]=pointer[i+1];
