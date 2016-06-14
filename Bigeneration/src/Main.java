@@ -12,6 +12,8 @@ public class Main {
 			BufferedReader typeBuff = new BufferedReader(types);
 			FileReader moves = new FileReader("pokemon_moves.txt");
 			BufferedReader movesBuff = new BufferedReader(moves);
+			FileOutputStream fileOut =  new FileOutputStream("pokedex.ser"); 
+	         ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			
 			int cod;
 			String line;
@@ -52,6 +54,7 @@ public class Main {
 				//Pra pegar os golpes -> mesma coisa dos outros
 				int flag = 0;
 				int version_id;
+				int j = 0;
 				while(flag == 0){
 					pokeList.clear();
 					movesLine = movesBuff.readLine();
@@ -64,9 +67,11 @@ public class Main {
 					if(version_id == 16){							//So pega se for a ultima geracao
 						if(cod == pkm.code){
 							cod = Integer.valueOf(pokeList.get(2));	//Reutilizando a variavel :V
-							pkm.moves.add(cod);	
+							pkm.moves[j] = cod;
+							j++;
 							movesBuff.mark(50000);					// Imprimir agora pq eh mais facil
 						}else{
+							pkm.moves[j] = -1;
 							movesBuff.reset();						//Da um reset
 							flag = 1;								//Sai do loop
 						}
@@ -76,26 +81,17 @@ public class Main {
 					
 				}
 				
-				
 				//System.out.println(pkm.code+" "+pkm.name+" "+pkm.type[0]+" "+pkm.type[1]);
 				//System.out.println();
 				  
-			      try
-			      {
-			         FileOutputStream fileOut =  new FileOutputStream("pokedex.ser");
-			         ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			         out.writeObject(pkm);
-			         out.close();
-			         fileOut.close();
-			         //System.out.printf("Serialized data is saved in /tmp/employee.ser");
-			      }catch(IOException i)
-			      {
-			          i.printStackTrace();
-			      }
+			 out.writeObject(pkm);
+			    
 			}
 			pokedex_buff.close();
 			typeBuff.close();
 			movesBuff.close();
+			out.close();
+			fileOut.close();
 		}
 		catch(IOException e){
 			System.out.println("File not found!");
@@ -108,8 +104,13 @@ public class Main {
 	        FileInputStream fileIn = new FileInputStream("pokedex.ser");
 		    ObjectInputStream in = new ObjectInputStream(fileIn);
 		    for(int i=0; i< 720; i++){
-		     	 pkm =(Pokemon) in.readObject();
+		     	 pkm = (Pokemon)in.readObject();
 		       	 System.out.println(pkm.code+" "+pkm.name+" "+pkm.type[0]+" "+pkm.type[1]);
+		       	 for(int l =0; l<190; l++){	
+		       		 if(pkm.moves[l] == -1)
+		       			 break;
+		       	 	System.out.println(pkm.moves[l]);
+		       	 }
 		       	 System.out.println();
 			}
 		    in.close();
