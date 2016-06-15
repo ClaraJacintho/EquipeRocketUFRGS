@@ -157,12 +157,13 @@ public class Main {
             FileOutputStream fileOut =  new FileOutputStream("moves.ser"); 
 	        ObjectOutputStream out = new ObjectOutputStream(fileOut);
             
-            Move golpe = new Move();
+            
             ArrayList<String> lista = new ArrayList<>();
             String moveLine = new String();
             
             while ((moveLine = movesBuff.readLine()) != null) {
-               lista.addAll(Arrays.asList(moveLine.split(",")));
+            	Move golpe = new Move();
+                lista.addAll(Arrays.asList(moveLine.split(",")));
 
                 golpe.code = Integer.valueOf(lista.get(0));
                 golpe.name = lista.get(1);
@@ -177,7 +178,6 @@ public class Main {
                 
                 
                 lista.clear(); 
-                
                 out.writeObject(golpe);
                 System.out.println(golpe.toString());
                 
@@ -186,7 +186,6 @@ public class Main {
               	movesBuff.close();
               	out.close();
               	fileOut.close();
-              	System.out.println("A");
         } catch (FileNotFoundException ex) {
         	 ex.printStackTrace();
         } catch (IOException ex) {
@@ -198,8 +197,8 @@ public class Main {
 			ObjectInputStream in = new ObjectInputStream(fileIn);
 			
 			
-			Move mewve = new Move();
 			for(int i =0; i<621 ;i++){
+				Move mewve = new Move();
 				mewve=(Move)in.readObject();
 				System.out.println(mewve.toString());
 			}
@@ -217,8 +216,3 @@ public class Main {
     }
 
 }
-	
-
-	
-	
-
