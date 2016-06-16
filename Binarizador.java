@@ -15,6 +15,7 @@ public class Binarizador {
 
     public void binarize() {
         try {
+            long off;
             FileReader pokedex = new FileReader("pokedex.txt");
             BufferedReader pokedex_buff = new BufferedReader(pokedex);
             FileReader types = new FileReader("pokemon_types.txt");
@@ -94,16 +95,16 @@ public class Binarizador {
                     pokeList.clear();
                     statLine = statsBuff.readLine();
                     pokeList.addAll(Arrays.asList(statLine.split(",")));
-                    pkm.stats[i] = Integer.valueOf(pokeList.get(0));
+                    pkm.stats[i] = Integer.valueOf(pokeList.get(2));
                 }
-
+                //System.out.println(pkm.code);
                 //System.out.println(pkm.code+" "+pkm.name+" "+pkm.type[0]+" "+pkm.type[1]);
-                for (int i = 0; i < 6; i++) {
+                /*for (int i = 0; i < 6; i++) {
                     System.out.println(pkm.stats[i]);
-                }
+                }*/
                 //System.out.println();
 
-                long off = write(pkm);
+                off = write(pkm);
                 arvi.insere(pkm.code, off);
 
             }
@@ -113,8 +114,9 @@ public class Binarizador {
             typeBuff.close();
             movesBuff.close();
             
-            moveFileMaker();
+            //System.out.println("Começa moveFileMaker");
             
+            moveFileMaker();
 
         } catch (IOException e) {
             System.out.println("File not found!");
@@ -125,7 +127,7 @@ public class Binarizador {
     public long write(Pokemon pkm) {
         try {
             long ptr = raf.getFilePointer();
-            raf.writeChars(pkm.name);
+            raf.writeBytes(pkm.name + '\n');
             raf.writeInt(pkm.code);
             for (int i = 0; i < 190; i++) {
                 raf.writeInt(pkm.moves[i]);
@@ -147,15 +149,17 @@ public class Binarizador {
 
         FileReader moves;
         try {
-            moves = new FileReader("move.bin");
+            moveRaf=new RandomAccessFile("moves.bin","rw");
+            moves = new FileReader("moves_semvirgula.txt");
             BufferedReader movesBuff = new BufferedReader(moves);
             Move golpe = new Move();
             ArrayList<String> lista = new ArrayList<>();
             String moveLine = new String();
             while ((moveLine = movesBuff.readLine()) != null) {
+                
                 lista.addAll(Arrays.asList(moveLine.split(",")));
                 golpe.code = Integer.valueOf(lista.get(0));
-                golpe.name = lista.get(1);
+                golpe.name = lista.get(1)+'\n';
                 golpe.type = Integer.valueOf(lista.get(3));
                 golpe.power = Integer.valueOf(lista.get(4));
                 golpe.accuracy = Integer.valueOf(lista.get(6));
@@ -167,8 +171,9 @@ public class Binarizador {
                 lista.clear();
 
                 try {
-                    long ptr = moveRaf.getFilePointer();
-                    moveRaf.writeChars(golpe.name);
+                    
+                    //long ptr = moveRaf.getFilePointer();
+                    moveRaf.writeBytes(golpe.name);
                     moveRaf.writeInt(golpe.code);
                     moveRaf.writeInt(golpe.type);
                     moveRaf.writeInt(golpe.power);
